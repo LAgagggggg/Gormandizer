@@ -54,4 +54,5 @@ code {
 .main-grid {
     width: 80vw;
     height: 100vh;
+    margin-top: 30px;
 }

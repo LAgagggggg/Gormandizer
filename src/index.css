@@ -16,10 +16,10 @@ code {
 }
 
 .gormandizer-title {
-    height: 10vh;
-    width: 100vh;
-    padding-left: 5vh;
-    background-color: #282c34;
+    height: 8vh;
+    width: 100vw;
+    padding-bottom: 5vh;
+    background-color: #394867;
     font-size: 40px;
     color: white;
     margin:0 auto;
@@ -28,7 +28,7 @@ code {
 
 .gormandizer-main {
   background-color: #282c34;
-  height: 90vh;
+  height: 92vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -54,5 +54,5 @@ code {
 .main-grid {
     width: 80vw;
     height: 100vh;
-    margin-top: 30px;
+    margin-top: 0px;
 }

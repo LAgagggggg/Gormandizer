@@ -1,11 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import { Button, Input, Row, Col, Timeline, Space } from 'antd';
+import { Button, Input, Row, Col, Timeline, Space, message } from 'antd';
+import copy from 'copy-to-clipboard';
 
 const request = require('request');
 
-const backendURL = 'http://127.0.0.1:6667';
+const backendURL = 'http://39.99.162.127:5556';
 
 class EditSection extends React.Component {
     render() {
@@ -33,11 +34,17 @@ class EditSection extends React.Component {
 }
 
 class History extends React.Component {
+
+    handleClick(i) {
+        copy(this.props.history[i])
+        message.success('已复制到剪切板', 2)
+    }
+
     render() {
-        const timeLineItems = this.props.history.map((content) => {
+        const timeLineItems = this.props.history.map((content, index) => {
             return (
-                <Timeline.Item>
-                    <Button>
+                <Timeline.Item key={index}>
+                    <Button onClick={()=>this.handleClick(index)}>
                         {content}
                     </Button>
                 </Timeline.Item>
@@ -104,6 +111,11 @@ class App extends React.Component {
     render() {
         return (
             <div className="gormandizer-main">
+                <Row>
+                    <Col span={24}>
+                        <div className="gormandizer-title" ><b style={{ "font-size": 40 }} >Gormandizer</b></div>
+                    </Col>
+                </Row>
                 <Row gutter={30} className='main-grid'>
                     <Col span={12} style={{ marginTop: "35px" }}>
                         <EditSection 
@@ -128,7 +140,6 @@ class App extends React.Component {
 
 ReactDOM.render(
     <React.StrictMode>
-        <div className="gormandizer-title" ><b style={{ "font-size": 40 }} >Gormandizer</b></div>
         <App />
     </React.StrictMode>,
     document.getElementById('root')

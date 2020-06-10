@@ -37,7 +37,7 @@ class History extends React.Component {
 
     handleClick(i) {
         copy(this.props.history[i])
-        message.success('已复制到剪切板', 2)
+        message.success('已复制到剪切板', 1)
     }
 
     render() {
@@ -45,7 +45,7 @@ class History extends React.Component {
             return (
                 <Timeline.Item key={index}>
                     <Button onClick={()=>this.handleClick(index)}>
-                        {content}
+                        {content.length<60 ? content : content.slice(0, 60) + '...'}
                     </Button>
                 </Timeline.Item>
             )
@@ -129,7 +129,7 @@ class App extends React.Component {
                         <Space direction="vertical">
                             <b>History</b>
                             <b></b>
-                            <History history={this.state.history} />
+                            <History history={this.state.history}/>
                         </Space>
                     </Col>
                 </Row>

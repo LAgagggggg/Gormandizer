@@ -22,8 +22,9 @@ code {
     background-color: #394867;
     font-size: 40px;
     color: white;
-    margin:0 auto;
-    text-align: center;
+    padding-left: 20px;
+    /* margin:0 auto; */
+    /* text-align: center; */
   }
 
 .gormandizer-main {

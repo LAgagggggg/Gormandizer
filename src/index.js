@@ -51,7 +51,7 @@ class History extends React.Component {
             )
         });
         return (
-            <Timeline className='main-timeline' reverse={true}>
+            <Timeline className='main-timeline' reverse={false}>
                 {timeLineItems}
             </Timeline>
         )
@@ -127,7 +127,7 @@ class App extends React.Component {
                     </Col>
                     <Col span={12}>
                         <Space direction="vertical">
-                            <b>History</b>
+                            <div className="history-title"><b style={{ "margin-top": "50pt" }} >Historyyyyyy</b></div>
                             <b></b>
                             <History history={this.state.history}/>
                         </Space>

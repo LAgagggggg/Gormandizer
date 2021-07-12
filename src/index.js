@@ -16,15 +16,16 @@ class EditSection extends React.Component {
                     className="main-input"
                     value={this.props.textContent}
                     onChange={this.props.handleChange}
-                    placeholder='请输入需要保存的内容' >
-
+                    placeholder='请输入需要保存的内容' 
+                    onPressEnter={this.props.handleEnterPressed}
+                >
                 </Input.TextArea>
                 <Button type="primary"
                     size='large'
                     block={true}
                     loading={this.props.isSubmitting}
                     onClick={this.props.handleSubmit}
-                    disabled={this.props.textContent.length === 0}
+                    disabled={this.props.textContent.length == 0}
                     style={{ marginTop: "10px", borderRadius: "10px" }}>
                     Commit
                 </Button>
@@ -72,7 +73,16 @@ class App extends React.Component {
     }
 
     handleChange(event) {
+        if (event.keyCode === 13 && !event.shiftKey) { // Do nothing when getting enter pressed
+            return;
+        }
         this.setState({ textContent: event.target.value });
+    }
+
+    handleEnterPressed(event) {
+        if (event.keyCode === 13 && !event.shiftKey && this.state.textContent.length != 0) {
+            this.handleSubmit()
+        }
     }
 
     handleSubmit() {
@@ -196,11 +206,12 @@ class App extends React.Component {
                             handleSubmit={()=>this.handleSubmit()}
                             handleChange={(e) => this.handleChange(e)} 
                             isSubmitting={this.state.isSubmitting}
+                            handleEnterPressed={(e) => this.handleEnterPressed(e)}
                         />
                     </Col>
                     <Col span={12}>
                         <Space direction="vertical">
-                            <div className="history-title"><b style={{ "margin-top": "50pt" }} >Historyyyyyy</b></div>
+                            <div className="history-title"><b style={{ "margin-top": "50pt" }} >{this.showingTodo ? 'Todo' : 'Historyyyyyy'}</b></div>
                             <b></b>
                             <History history={this.state.history}/>
                         </Space>

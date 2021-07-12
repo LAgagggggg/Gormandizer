@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import { Button, Input, Row, Col, Timeline, Space, message } from 'antd';
+import { Button, Input, Row, Col, Timeline, Space, message, Alert } from 'antd';
 import copy from 'copy-to-clipboard';
 
 const request = require('request');
@@ -59,12 +59,15 @@ class History extends React.Component {
 }
 
 class App extends React.Component {
+    showingTodo = false;
+
     constructor(props) {
         super(props);
         this.state = {
             history: [],
             textContent: "",
-            isSubmitting: false
+            isSubmitting: false,
+            showingTodo: false,
         };
     }
 
@@ -74,25 +77,95 @@ class App extends React.Component {
 
     handleSubmit() {
         this.setState({ isSubmitting: true })
+        let content = this.state.textContent;
+        if (content.startsWith('todo')) {
+            this.handleTodoSubmit(content);
+            return;
+        }
+        else {
+            this.showingTodo = false;
+        }
+
         request.post({
             url: backendURL + '/commit',
             method: 'POST',
             headers: {
                 "content-type": "application/json",
             },
-            body: JSON.stringify({ content: this.state.textContent })
+            body: JSON.stringify({ content: content })
         }, (err, res, body) => {
             this.setState({ 
                 isSubmitting: false,
                 textContent: ""
             })
             if (err) { return console.log(err); }
-            this.reloadHistory()
+            this.reloadHistory();
         });
     }
 
+    handleTodoSubmit(content) {
+        if (content == 'todo!') {
+            this.showingTodo = true;
+            this.setState({ 
+                isSubmitting: false,
+                textContent: "",
+            })
+            this.reloadHistory();
+        }
+        else if (content.startsWith('todo add ')) {
+            request.post({
+                url: backendURL + '/add_todo',
+                method: 'POST',
+                headers: {
+                    "content-type": "application/json",
+                },
+                body: JSON.stringify({ content: content.replace('todo add ', '') })
+            }, (err, res, body) => {
+                this.setState({ 
+                    isSubmitting: false,
+                    textContent: ""
+                })
+                if (err) { return console.log(err); }
+                this.reloadHistory();
+            });
+        }
+        else if (content.startsWith('todo rm ')) {
+            request.post({
+                url: backendURL + '/rm_todo',
+                method: 'POST',
+                headers: {
+                    "content-type": "application/json",
+                },
+                body: JSON.stringify({ content: content.replace('todo rm ', '') })
+            }, (err, res, body) => {
+                this.setState({ 
+                    isSubmitting: false,
+                    textContent: ""
+                })
+                if (err) { return console.log(err); }
+                this.reloadHistory();
+            });
+        }
+        else if (content == 'todo.') {
+            this.showingTodo = false;
+            this.setState({ 
+                isSubmitting: false,
+                textContent: "",
+            })
+            this.reloadHistory();
+        }
+        else {
+            message.info('todo what?', 1)
+            this.setState({ 
+                isSubmitting: false,
+                textContent: "",
+            })
+        }
+    }
+
     reloadHistory() {
-        request.get(backendURL + '/history', (err, res, body) => {
+        let query = this.showingTodo ? '/todo_list' : '/history';
+        request.get(backendURL + query, (err, res, body) => {
             if (err) { return console.log(err); };
             let history = JSON.parse(body);
             if (!Array.isArray(history)) {

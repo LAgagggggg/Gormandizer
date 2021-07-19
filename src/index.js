@@ -73,22 +73,20 @@ class App extends React.Component {
     }
 
     handleChange(event) {
-        if (event.keyCode === 13 && !event.shiftKey) { // Do nothing when getting enter pressed
-            return;
-        }
         this.setState({ textContent: event.target.value });
     }
 
     handleEnterPressed(event) {
         if (event.keyCode === 13 && !event.shiftKey && this.state.textContent.length != 0) {
             this.handleSubmit()
+            event.preventDefault();
         }
     }
 
     handleSubmit() {
         this.setState({ isSubmitting: true })
         let content = this.state.textContent;
-        if (content.startsWith('todo')) {
+        if (content.startsWith('todo') || content.startsWith('td')) {
             this.handleTodoSubmit(content);
             return;
         }
@@ -114,7 +112,7 @@ class App extends React.Component {
     }
 
     handleTodoSubmit(content) {
-        if (content == 'todo!') {
+        if (content == 'todo' || content == 'td') {
             this.showingTodo = true;
             this.setState({ 
                 isSubmitting: false,
@@ -130,6 +128,40 @@ class App extends React.Component {
                     "content-type": "application/json",
                 },
                 body: JSON.stringify({ content: content.replace('todo add ', '') })
+            }, (err, res, body) => {
+                this.setState({ 
+                    isSubmitting: false,
+                    textContent: ""
+                })
+                if (err) { return console.log(err); }
+                this.reloadHistory();
+            });
+        }
+        else if (content.startsWith('tda ')) {
+            request.post({
+                url: backendURL + '/add_todo',
+                method: 'POST',
+                headers: {
+                    "content-type": "application/json",
+                },
+                body: JSON.stringify({ content: content.replace('tda ', '') })
+            }, (err, res, body) => {
+                this.setState({ 
+                    isSubmitting: false,
+                    textContent: ""
+                })
+                if (err) { return console.log(err); }
+                this.reloadHistory();
+            });
+        }
+        else if (content == 'tdrf') {
+            request.post({
+                url: backendURL + '/rm_todo_of_index',
+                method: 'POST',
+                headers: {
+                    "content-type": "application/json",
+                },
+                body: JSON.stringify({ index: 0 })
             }, (err, res, body) => {
                 this.setState({ 
                     isSubmitting: false,
@@ -156,7 +188,7 @@ class App extends React.Component {
                 this.reloadHistory();
             });
         }
-        else if (content == 'todo.') {
+        else if (content == 'todo.'|| content == 'td.') {
             this.showingTodo = false;
             this.setState({ 
                 isSubmitting: false,

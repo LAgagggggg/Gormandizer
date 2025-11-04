@@ -6,7 +6,7 @@ import copy from 'copy-to-clipboard';
 
 const request = require('request');
 
-const backendURL = 'http://39.99.162.127:5556';
+const backendURL = 'http://127.0.0.1:5556';
 
 class EditSection extends React.Component {
     render() {
